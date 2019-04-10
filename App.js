@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ListView, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Button, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
-import ent from 'ent';
 export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
@@ -47,7 +46,9 @@ export default class UselessTextInput extends Component {
                 {
                     if(data[i+3].includes(") - IMDb"))
                     {
-                        results.push({id: key++, data: ent.decode(data[i+3].split(" - IMDb")[0].trim())});
+                        results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                          return String.fromCharCode(dec);
+                      })});
                     }
                 }
             }
@@ -87,7 +88,7 @@ export default class UselessTextInput extends Component {
         <TouchableOpacity activeOpacity = { .5 } onPress={ this.clear }>
             <Image 
               source={require('./images/delete.png')}
-              style={{width: 30, height: 30, marginTop: 25, marginRight: 10}}>
+              style={{width: 30, height: 30, marginTop: 30, marginLeft: 10}}>
             </Image>
           </TouchableOpacity>
           <TextInput
@@ -101,7 +102,7 @@ export default class UselessTextInput extends Component {
           <TouchableOpacity activeOpacity = { .5 } onPress={ this.search }>
             <Image 
               source={require('./images/search.png')}
-              style={{width: 30, height: 30, marginTop: 25, marginRight: 10}}>
+              style={{width: 30, height: 30, marginTop: 30, marginRight: 10, marginLeft: 10}}>
             </Image>
           </TouchableOpacity>
         </View>
