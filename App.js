@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ListView, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Button, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
-
+import ent from 'ent';
 export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
@@ -47,7 +47,7 @@ export default class UselessTextInput extends Component {
                 {
                     if(data[i+3].includes(") - IMDb"))
                     {
-                        results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim()});
+                        results.push({id: key++, data: ent.decode(data[i+3].split(" - IMDb")[0].trim())});
                     }
                 }
             }
