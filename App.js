@@ -21,70 +21,89 @@ export default class UselessTextInput extends Component {
 
   search = () => {
     Keyboard.dismiss();
+    let match = true;
     axios.get('http://www.omdbapi.com/?apikey=17c59968&t=' + this.state.text)
     .then(response => {
-      if(response.data.Title != undefined){
-        this.setState({
-          title: response.data.Title,
-	        year:  " (" + response.data.Year + ")",
-          director: response.data.Director,
-          genre: response.data.Genre,
-          imdb: response.data.Ratings[0].Value.split("/")[0],
-          rotten: response.data.Ratings.length > 1 ? response.data.Ratings[1].Value : "N/A",
-          image: response.data.Poster,
-          details: response.data.Plot,
-          time: response.data.Runtime,
-          link: response.data.imdbID,
-          list: false
-        });
-        if(this.state.rotten.split("%")[0] < 60){
-          this.setState({icon: require("./images/rotten.png")});
-        }else{
-          this.setState({icon: require("./images/fresh.png")});
-        }
-      }
-      else
-      {
-        fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+imdb").then(r => {
+      fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+movie").then(r => {
+          return r.text();
+      }).then( data => {
+          data = data.split("\n");
+          let results = [];
+          let key = 0;
+          for(let i =0; i < data.length; i++)
+          {
+              if(data[i].includes("imdb.com"))
+              {
+                  if(data[i+3].includes(") - IMDb"))
+                  {
+                      results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                        return String.fromCharCode(dec);
+                    })});
+                  }
+              }
+          }
+          fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+imdb").then(r => {
             return r.text();
-        }).then( data => {
-            data = data.split("\n");
-            let results = [];
-            let key = 0;
-            for(let i =0; i < data.length; i++)
-            {
-                if(data[i].includes("imdb.com"))
+          }).then( data => {
+              data = data.split("\n");
+              for(let i =0; i < data.length; i++)
+              {
+                  if(data[i].includes("imdb.com"))
+                  {
+                      if(data[i+3].includes(") - IMDb"))
+                      {
+                          results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                            return String.fromCharCode(dec);
+                        })});
+                      }
+                  }
+              }
+              var resultsFilter = [];
+              results.forEach(a => {
+                let keep = true;
+                resultsFilter.forEach(b => {
+                  if(a.data == b.data){
+                    keep = false;
+                  }
+                });
+                if(keep)
                 {
-                    if(data[i+3].includes(") - IMDb"))
-                    {
-                        results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
-                          return String.fromCharCode(dec);
-                      })});
-                    }
-                }
-            }
-            var resultsFilter = [];
-            results.forEach(a => {
-              let keep = true;
-              resultsFilter.forEach(b => {
-                if(a.data == b.data){
-                  keep = false;
+                  resultsFilter.push(a);
                 }
               });
-              if(keep)
-              {
-                resultsFilter.push(a);
+              resultsFilter.sort((a,b) => {
+                return a.data.split("(")[1] > b.data.split("(")[1];
+              });
+              if(response.data.Title != undefined){
+                this.setState({
+                  title: response.data.Title,
+                  year:  " (" + response.data.Year + ")",
+                  director: response.data.Director,
+                  genre: response.data.Genre,
+                  imdb: response.data.Ratings[0].Value.split("/")[0],
+                  rotten: response.data.Ratings.length > 1 ? response.data.Ratings[1].Value : "N/A",
+                  image: response.data.Poster,
+                  details: response.data.Plot,
+                  time: response.data.Runtime,
+                  link: response.data.imdbID,
+                  list: false,
+                  results: resultsFilter
+                });
+                if(this.state.rotten.split("%")[0] < 60){
+                  this.setState({icon: require("./images/rotten.png")});
+                }else{
+                  this.setState({icon: require("./images/fresh.png")});
+                }
               }
-            });
-            resultsFilter.sort((a,b) => {
-              return a.data.split("(")[1] > b.data.split("(")[1];
-            });
-            this.setState({
-              results: resultsFilter,
-              list: true
-            });
+              else
+              {
+                this.setState({
+                  results: resultsFilter,
+                  list: true
+                });
+              }
+          });
         });
-      }
     });
   }
 

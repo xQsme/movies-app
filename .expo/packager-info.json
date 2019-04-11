@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 12386,
-  "expoServerNgrokUrl": "https://cv-vtj.zyxyz.movies.exp.direct",
-  "packagerNgrokUrl": "https://packager.cv-vtj.zyxyz.movies.exp.direct",
-  "ngrokPid": 12437
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
