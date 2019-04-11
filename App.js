@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
-import { ListView, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Button, Keyboard, Alert, Linking } from 'react-native';
+import { BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Button, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
+
 export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
     this.state = { list: false, results: [], text: 'Shawshank Redemption', title: "The Shawshank Redemption", year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
+  }
+  componentWillMount(){
+    BackHandler.addEventListener('hardwareBackPress', () => {
+        this.setState({list: !this.state.list});
+        return true;
+    });
+  }
+
+  componentWillUnmount(){
+    BackHandler.removeEventListener('hardwareBackPress');
   }
 
   search = () => {
@@ -52,8 +63,24 @@ export default class UselessTextInput extends Component {
                     }
                 }
             }
+            var resultsFilter = [];
+            results.forEach(a => {
+              let keep = true;
+              resultsFilter.forEach(b => {
+                if(a.data == b.data){
+                  keep = false;
+                }
+              });
+              if(keep)
+              {
+                resultsFilter.push(a);
+              }
+            });
+            resultsFilter.sort((a,b) => {
+              return a.data.split("(")[1] > b.data.split("(")[1];
+            });
             this.setState({
-              results: results,
+              results: resultsFilter,
               list: true
             });
         });
