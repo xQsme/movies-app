@@ -36,7 +36,7 @@ export default class UselessTextInput extends Component {
               {
                   if(data[i+3].includes(") - IMDb"))
                   {
-                      results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                      results.push({id: key++, imdb: data[i].split("/title/")[1].split("/")[0], data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
                         return String.fromCharCode(dec);
                     })});
                   }
@@ -52,7 +52,7 @@ export default class UselessTextInput extends Component {
                   {
                       if(data[i+3].includes(") - IMDb"))
                       {
-                          results.push({id: key++, data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                          results.push({id: key++, imdb: data[i].split("/title/")[1].split("/")[0], data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
                             return String.fromCharCode(dec);
                         })});
                       }
@@ -158,7 +158,7 @@ export default class UselessTextInput extends Component {
   }
 
   handleClick = (item) => {
-    axios.get('http://www.omdbapi.com/?apikey=17c59968&t=' + item.data.split(" (")[0])
+    axios.get('http://www.omdbapi.com/?apikey=17c59968&i=' + item.imdb)
     .then(response => {
       if(response.data.Title != undefined){
         this.setState({
