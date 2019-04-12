@@ -6,8 +6,19 @@ export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
-    this.state = { list: false, results: [{key: 0, data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
+    this.state = { ad: false, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, {url:"https://www.ecosia.org/", width: 300, height: 250, image:"https://blog.xeit.ch/wp-content/uploads/2013/09/Ecosia-Suchmaschine-Alternative-zu-Google.jpg"}],  list: false, results: [{key: 0, data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
   }
+
+  componentDidMount(){
+    this.setState({selected: this.state.ads[Math.floor(Math.random()*this.state.ads.length)]});
+    if(this.state.ad)
+    {
+      setTimeout(() => {
+        this.setState({dismiss: true});
+      }, 2000);
+    }
+  }
+
   componentWillMount(){
     BackHandler.addEventListener('hardwareBackPress', () => {
         this.setState({list: !this.state.list});
@@ -21,7 +32,6 @@ export default class UselessTextInput extends Component {
 
   search = () => {
     Keyboard.dismiss();
-    let match = true;
     axios.get('http://www.omdbapi.com/?apikey=17c59968&t=' + this.state.text)
     .then(response => {
       fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+movie").then(r => {
@@ -107,6 +117,14 @@ export default class UselessTextInput extends Component {
     });
   }
 
+  dismiss = () => {
+    this.setState({ad: false});
+  }
+
+  redirectAd = () => {
+    Linking.openURL(this.state.selected.url);
+  }
+
   clear = () => {
     this.setState({text: ""});
   }
@@ -127,7 +145,43 @@ export default class UselessTextInput extends Component {
     Linking.openURL("https://www.letterboxd.com/film/" + this.state.title.toLowerCase().replace(/[^a-zA-Z0-9]+/g, "-"));
   }
 
+  renderDismiss()
+  {
+    if(this.state.dismiss)
+    {
+      return (
+        <TouchableOpacity 
+          style={{
+            marginTop: 20,
+            paddingRight: 20,
+            paddingLeft: 20,  
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(51,153,255, 1)',
+            height: 40,
+            borderRadius: 20}}
+          onPress={this.dismiss}>
+          <Text style={{color: 'rgb(255,255,255)', fontSize: 20}}>
+          Dismiss
+          </Text>
+        </TouchableOpacity>);
+    }
+    return null;
+  }
+
   render() {
+    if(this.state.ad)
+    {
+      return(<View style={{backgroundColor: '#444', flex: 1, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+        <TouchableOpacity activeOpacity = { .5 } onPress={ this.redirectAd }>
+          <Image
+            source={{uri: this.state.selected.image}}
+            style={{width: this.state.selected.width, height: this.state.selected.height}}>
+          </Image>
+        </TouchableOpacity>
+        {this.renderDismiss()}
+      </View>);
+    }
     return (
       <View style={{backgroundColor: '#444', flex: 1}}>
         <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
