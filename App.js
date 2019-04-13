@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dimensions, BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Keyboard, Alert, Linking } from 'react-native';
+import { StatusBar, Dimensions, BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -7,11 +7,16 @@ let isIos = require('react-native').Platform.OS === 'ios';
 var width = Dimensions.get('window').width; 
 var height = Dimensions.get('window').height; 
 
+if(height < width)
+{
+  width = height;
+}
+
 export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
-    this.state = { ad: false, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, 
+    this.state = { ad: true, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, 
     {url:"https://www.ecosia.org/", width: 300, height: 250, image:"https://blog.xeit.ch/wp-content/uploads/2013/09/Ecosia-Suchmaschine-Alternative-zu-Google.jpg"}],  
     list: false, results: [{key: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", 
     year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
@@ -193,6 +198,10 @@ export default class UselessTextInput extends Component {
     if(this.state.ad)
     {
       return(<View style={{backgroundColor: '#444', flex: 1, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+         <StatusBar
+          backgroundColor="blue"
+          barStyle="light-content"
+        />
         <TouchableOpacity activeOpacity = { .5 } onPress={ this.redirectAd }>
           <Image
             source={{uri: this.state.selected.image}}
@@ -205,6 +214,10 @@ export default class UselessTextInput extends Component {
     return (
       <GestureRecognizer style={{backgroundColor: '#444', flex: 1, paddingTop: isIos ? 40 : 0}}
         onSwipe={(direction, state) => this.onSwipe(direction, state)}>
+           <StatusBar
+              backgroundColor="blue"
+              barStyle="light-content"
+            />
           <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
           <TouchableOpacity activeOpacity = { .5 } onPress={ this.clear }>
               <Image 
@@ -295,7 +308,7 @@ export default class UselessTextInput extends Component {
             <TouchableOpacity activeOpacity = { .5 } onPress={ this.show }>
               <Image
                 source={{uri: this.state.image}}
-                style={{width: width*0.8, height: height*0.6}}>
+                style={{width: width*0.75, height: width*1.11}}>
               </Image>
             </TouchableOpacity>
             <Text style={{ fontSize: 20, color: "#CCC"}}>{this.state.director} - {this.state.time}</Text>
