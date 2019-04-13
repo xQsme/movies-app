@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
-import { BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Button, Keyboard, Alert, Linking } from 'react-native';
+import { Dimensions, BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+
+let isIos = require('react-native').Platform.OS === 'ios';
+var width = Dimensions.get('window').width; 
+var height = Dimensions.get('window').height; 
 
 export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
-    this.state = { ad: false, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, {url:"https://www.ecosia.org/", width: 300, height: 250, image:"https://blog.xeit.ch/wp-content/uploads/2013/09/Ecosia-Suchmaschine-Alternative-zu-Google.jpg"}],  list: false, results: [{key: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
+    this.state = { ad: false, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, 
+    {url:"https://www.ecosia.org/", width: 300, height: 250, image:"https://blog.xeit.ch/wp-content/uploads/2013/09/Ecosia-Suchmaschine-Alternative-zu-Google.jpg"}],  
+    list: false, results: [{key: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", 
+    year: " (1994)", director: "Frank Darabont", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
+    details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
+    image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
   }
 
   componentDidMount(){
@@ -28,6 +38,16 @@ export default class UselessTextInput extends Component {
 
   componentWillUnmount(){
     BackHandler.removeEventListener('hardwareBackPress');
+  }
+
+  onSwipe(gestureName, gestureState) {
+    const {SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    switch (gestureName) {
+      case SWIPE_LEFT:
+      case SWIPE_RIGHT:
+        this.setState({list: !this.state.list});
+        break;
+    }
   }
 
   search = () => {
@@ -183,31 +203,32 @@ export default class UselessTextInput extends Component {
       </View>);
     }
     return (
-      <View style={{backgroundColor: '#444', flex: 1}}>
-        <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity activeOpacity = { .5 } onPress={ this.clear }>
-            <Image 
-              source={require('./images/delete.png')}
-              style={{width: 30, height: 30, marginTop: 30, marginLeft: 10}}>
-            </Image>
-          </TouchableOpacity>
-          <TextInput
-            value={this.state.text}
-            style={{height: 60, fontSize: 20, marginTop: 10, marginLeft: 10, flex: 1, color: '#CCC'}}
-            onChangeText={(text) => this.setState({text})}
-            placeholder="Movie Name"
-            underlineColorAndroid='#CCC'
-            placeholderTextColor='#AAA'
-          ></TextInput>
-          <TouchableOpacity activeOpacity = { .5 } onPress={ this.search }>
-            <Image 
-              source={require('./images/search.png')}
-              style={{width: 30, height: 30, marginTop: 30, marginRight: 10, marginLeft: 10}}>
-            </Image>
-          </TouchableOpacity>
-        </View>
-        {this.renderMovie()}
-      </View>
+      <GestureRecognizer style={{backgroundColor: '#444', flex: 1, paddingTop: isIos ? 40 : 0}}
+        onSwipe={(direction, state) => this.onSwipe(direction, state)}>
+          <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TouchableOpacity activeOpacity = { .5 } onPress={ this.clear }>
+              <Image 
+                source={require('./images/delete.png')}
+                style={{width: 30, height: 30, marginTop: 30, marginLeft: 10}}>
+              </Image>
+            </TouchableOpacity>
+            <TextInput
+              value={this.state.text}
+              style={{height: 60, fontSize: 20, marginTop: 10, marginLeft: 10, flex: 1, color: '#CCC'}}
+              onChangeText={(text) => this.setState({text})}
+              placeholder="Movie Name"
+              underlineColorAndroid='#CCC'
+              placeholderTextColor='#AAA'
+            ></TextInput>
+            <TouchableOpacity activeOpacity = { .5 } onPress={ this.search }>
+              <Image 
+                source={require('./images/search.png')}
+                style={{width: 30, height: 30, marginTop: 30, marginRight: 10, marginLeft: 10}}>
+              </Image>
+            </TouchableOpacity>
+          </View>
+          {this.renderMovie()}
+      </GestureRecognizer>
     );
   }
 
@@ -274,7 +295,7 @@ export default class UselessTextInput extends Component {
             <TouchableOpacity activeOpacity = { .5 } onPress={ this.show }>
               <Image
                 source={{uri: this.state.image}}
-                style={{width: 263, height: 400}}>
+                style={{width: width*0.8, height: height*0.6}}>
               </Image>
             </TouchableOpacity>
             <Text style={{ fontSize: 20, color: "#CCC"}}>{this.state.director} - {this.state.time}</Text>
