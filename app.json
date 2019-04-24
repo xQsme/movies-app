@@ -1,16 +1,4 @@
 {
- "expo": {
-  "name": "Movies",
-  "icon": "./images/movies.png",
-  "version": "2.0.0",
-  "slug": "xqsme-movies",
-  "sdkVersion": "27.0.0",
-  "ios": {
-    "bundleIdentifier": "com.xqsme.movies",
-    "icon": "./images/moviesIos.png"
-  },
-  "android": {
-    "package": "com.xqsme.movies"
-  }
- }
+  "name": "MovieSearch",
+  "displayName": "MovieSearch Search"
 }

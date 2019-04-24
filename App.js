@@ -18,7 +18,7 @@ export default class UselessTextInput extends Component {
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
     this.state = { ad: false, dismiss: false, selected: {}, ads: [{url:"https://duckduckgo.com/", width: 300, height:300, image:"https://sagarhani.files.wordpress.com/2015/07/duck_duck_go.png"}, 
     {url:"https://www.ecosia.org/", width: 300, height: 250, image:"https://blog.xeit.ch/wp-content/uploads/2013/09/Ecosia-Suchmaschine-Alternative-zu-Google.jpg"}],  
-    list: false, results: [{key: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", 
+    list: false, results: [{id: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: 'Shawshank Redemption', title: "The Shawshank Redemption", 
     year: " (1994)", director: "Frank Darabont", writers: "Stephen King\n\t\tFrank Darabont", cast: "Tim Robbins\n\t\tMorgan Freeman\n\t\tBob Gunton\n\t\tWilliam Sadler", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
     details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
     image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
@@ -205,7 +205,6 @@ export default class UselessTextInput extends Component {
     {
       return(<View style={{backgroundColor: '#444', flex: 1, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
          <StatusBar
-          backgroundColor="blue"
           barStyle="light-content"
         />
         <TouchableOpacity activeOpacity = { .5 } onPress={ this.redirectAd }>
@@ -221,19 +220,18 @@ export default class UselessTextInput extends Component {
       <GestureRecognizer style={{backgroundColor: '#444', flex: 1, paddingTop: isIos ? 40 : 0}}
         onSwipe={(direction, state) => this.onSwipe(direction, state)}>
            <StatusBar
-              backgroundColor="blue"
               barStyle="light-content"
             />
           <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
           <TouchableOpacity activeOpacity = { .5 } onPress={ this.clear }>
               <Image 
                 source={require('./images/delete.png')}
-                style={{width: 30, height: 30, marginTop: 30, marginLeft: 10}}>
+                style={{width: 30, height: 30, marginTop: 10, marginLeft: 10}}>
               </Image>
             </TouchableOpacity>
             <TextInput
               value={this.state.text}
-              style={{height: 60, fontSize: 20, marginTop: 10, marginLeft: 10, flex: 1, color: '#CCC'}}
+              style={{height: 60, fontSize: 20, marginTop: -10, marginLeft: 10, flex: 1, color: '#CCC'}}
               onChangeText={(text) => this.setState({text})}
               placeholder="Movie Name"
               underlineColorAndroid='#CCC'
@@ -242,7 +240,7 @@ export default class UselessTextInput extends Component {
             <TouchableOpacity activeOpacity = { .5 } onPress={ this.search }>
               <Image 
                 source={require('./images/search.png')}
-                style={{width: 30, height: 30, marginTop: 30, marginRight: 10, marginLeft: 10}}>
+                style={{width: 30, height: 30, marginTop: 10, marginRight: 10, marginLeft: 10}}>
               </Image>
             </TouchableOpacity>
           </View>
