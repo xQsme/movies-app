@@ -59,7 +59,7 @@ export default class UselessTextInput extends Component {
     Keyboard.dismiss();
     axios.get('http://www.omdbapi.com/?apikey=17c59968&t=' + this.state.text)
     .then(response => {
-      fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+movie").then(r => {
+      fetch('https://www.ecosia.org/search?q=site%3Aimdb.com+' + this.state.text.split(" ").join("+") + "+movie").then(r => {
           return r.text();
       }).then( data => {
           data = data.split("\n");
@@ -77,7 +77,7 @@ export default class UselessTextInput extends Component {
                   }
               }
           }
-          fetch('https://www.ecosia.org/search?q=' + this.state.text.split(" ").join("+") + "+imdb").then(r => {
+          fetch('https://www.ecosia.org/search?q=site%3Aimdb.com+' + this.state.text.split(" ").join("+")).then(r => {
             return r.text();
           }).then( data => {
               data = data.split("\n");
@@ -320,8 +320,8 @@ export default class UselessTextInput extends Component {
               </Image>
             </TouchableOpacity>
             <TouchableOpacity style={styles.container} activeOpacity = { .5 } onPress={ this.cast }>
-              <Text style={{ fontSize: 20, color: "#CCC"}}>{this.state.director} - {this.state.time}</Text>
-              <Text style={{ fontSize: 20, color: "#CCC"}}>{this.state.genre}</Text>
+              <Text style={{ textAlign: "center", fontSize: 20, color: "#CCC"}}>{this.state.director} - {this.state.time}</Text>
+              <Text style={{ textAlign: "center", fontSize: 20, color: "#CCC"}}>{this.state.genre}</Text>
             </TouchableOpacity>
             <View style={{ flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity activeOpacity = { .5 } onPress={ this.open }>
