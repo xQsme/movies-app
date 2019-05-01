@@ -17,7 +17,7 @@ export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
-    this.state = { ad: true, dismiss: false, list: false, results: [{id: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: '', title: "The Shawshank Redemption", 
+    this.state = { ad: false, dismiss: false, list: false, results: [{id: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: '', title: "The Shawshank Redemption", 
     year: " (1994)", director: "Frank Darabont", writers: "Stephen King\n\t\tFrank Darabont", cast: "Tim Robbins\n\t\tMorgan Freeman\n\t\tBob Gunton\n\t\tWilliam Sadler", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
     details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
     image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
@@ -150,7 +150,7 @@ export default class UselessTextInput extends Component {
   }
 
   redirectAd = () => {
-    Linking.openURL("https://play.google.com/");
+    Linking.openURL("https://play.google.com/store/apps/details?id=com.xQsme.moviesearch");
   }
 
   clear = () => {
@@ -214,7 +214,7 @@ export default class UselessTextInput extends Component {
             style={{width: width*0.5, height: width*0.5}}>
           </Image>
         </TouchableOpacity>
-        <Text style={{ textAlign: "center", fontSize: 20, color: "#CCC"}}>Please consider buying the paid version to help with the costs of running the app and remove this ad.</Text>
+        <Text style={{ textAlign: "center", fontSize: 20, color: "#CCC"}}>Please consider buying the paid version to help with the costs of running the app and to remove this ad.</Text>
         {this.renderDismiss()}
       </View>);
     }
