@@ -5,13 +5,15 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {APIKey} from './api';
 
 let isIos = require('react-native').Platform.OS === 'ios';
-var width = Dimensions.get('window').width; 
-var height = Dimensions.get('window').height; 
+let width = Dimensions.get('window').width; 
+let height = Dimensions.get('window').height; 
 
 if(height < width)
 {
   width = height;
 }
+
+let imageMultiplier = height/width/1.75;
 
 export default class UselessTextInput extends Component {
   constructor(props) {
@@ -316,7 +318,7 @@ export default class UselessTextInput extends Component {
             <TouchableOpacity activeOpacity = { .5 } onPress={ this.show }>
               <Image
                 source={{uri: this.state.image}}
-                style={{width: width*0.75, height: width*1.11}}>
+                style={{width: width*0.75*imageMultiplier, height: width*1.11*imageMultiplier}}>
               </Image>
             </TouchableOpacity>
             <TouchableOpacity style={styles.container} activeOpacity = { .5 } onPress={ this.cast }>
