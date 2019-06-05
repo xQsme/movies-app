@@ -11,7 +11,8 @@
     "react-native": "0.59.5",
     "react-native-axios": "^0.17.1",
     "react-native-rename": "^2.4.1",
-    "react-native-swipe-gestures": "^1.0.3"
+    "react-native-swipe-gestures": "^1.0.3",
+    "ws": "^7.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.4.3",
