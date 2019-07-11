@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "braces": "^3.0.2",
+    "lodash": "^4.17.14",
     "lodash.merge": "^4.6.2",
     "react": "16.8.3",
     "react-native": "0.59.5",
