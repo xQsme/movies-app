@@ -10,7 +10,9 @@ let height = Dimensions.get('window').height;
 
 if(height < width)
 {
+  let temp = width;
   width = height;
+  height = temp;
 }
 
 let imageMultiplier = height/width/1.75;
@@ -73,9 +75,12 @@ export default class UselessTextInput extends Component {
                 {
                     if(data[i+3].includes(") - IMDb"))
                     {
-                        results.push({id: key++, imdb: data[i].split("/title/")[1].split("/")[0], data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
-                          return String.fromCharCode(dec);
-                      })});
+                        if(data[i].includes("/title/"))
+                        {
+                          results.push({id: key++, imdb: data[i].split("/title/")[1].split("/")[0], data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
+                            return String.fromCharCode(dec);
+                          })});
+                        }
                     }
                 }
             }
@@ -89,9 +94,12 @@ export default class UselessTextInput extends Component {
                     {
                         if(data[i+3].includes(") - IMDb"))
                         {
+                          if(data[i].includes("/title/"))
+                          {
                             results.push({id: key++, imdb: data[i].split("/title/")[1].split("/")[0], data: data[i+3].split(" - IMDb")[0].trim().replace(/&#(\d+);/g, function(match, dec) {
                               return String.fromCharCode(dec);
-                          })});
+                            })});
+                          }
                         }
                     }
                 }
