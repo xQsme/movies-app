@@ -3,6 +3,7 @@ import { StatusBar, Dimensions, BackHandler, ScrollView, Text, TextInput, Image,
 import axios from 'react-native-axios';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {APIKey} from './api';
+import AsyncStorage from '@react-native-community/async-storage';
 
 let isIos = require('react-native').Platform.OS === 'ios';
 let width = Dimensions.get('window').width; 
@@ -25,7 +26,24 @@ export default class UselessTextInput extends Component {
     year: " (1994)", director: "Frank Darabont", writers: "Stephen King\n\t\tFrank Darabont", cast: "Tim Robbins\n\t\tMorgan Freeman\n\t\tBob Gunton\n\t\tWilliam Sadler", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
     details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
     image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
+    this.retrieveData();
   }
+
+  storeData = async () => {
+    try {
+      await AsyncStorage.setItem('state', JSON.stringify(this.state));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  retrieveData = async () => {
+    try {
+      this.setState(JSON.parse(await AsyncStorage.getItem('state')));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   componentDidMount(){
     if(this.state.ad)
@@ -152,6 +170,7 @@ export default class UselessTextInput extends Component {
             });
           });
       });
+      this.storeData();
     }
   }
 
