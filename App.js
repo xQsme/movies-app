@@ -4,6 +4,7 @@ import axios from 'react-native-axios';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {APIKey} from './api';
 import AsyncStorage from '@react-native-community/async-storage';
+import { throwStatement } from '@babel/types';
 
 let isIos = require('react-native').Platform.OS === 'ios';
 let width = Dimensions.get('window').width; 
@@ -26,7 +27,6 @@ export default class UselessTextInput extends Component {
     year: " (1994)", director: "Frank Darabont", writers: "Stephen King\n\t\tFrank Darabont", cast: "Tim Robbins\n\t\tMorgan Freeman\n\t\tBob Gunton\n\t\tWilliam Sadler", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
     details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
     image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
-    this.retrieveData();
   }
 
   storeData = async () => {
@@ -40,12 +40,19 @@ export default class UselessTextInput extends Component {
   retrieveData = async () => {
     try {
       this.setState(JSON.parse(await AsyncStorage.getItem('state')));
+      this.setState({text: ""});
+      if(this.state.rotten.split("%")[0] < 60){
+        this.setState({icon: require("./images/rotten.png")});
+      }else{
+        this.setState({icon: require("./images/fresh.png")});
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   componentDidMount(){
+    this.retrieveData();
     if(this.state.ad)
     {
       setTimeout(() => {
@@ -167,10 +174,10 @@ export default class UselessTextInput extends Component {
                     list: true
                   });
                 }
+                this.storeData();
             });
           });
       });
-      this.storeData();
     }
   }
 
@@ -304,6 +311,7 @@ export default class UselessTextInput extends Component {
         }else{
           this.setState({icon: require("./images/fresh.png")});
         }
+        this.storeData();
       }
     });
   }
