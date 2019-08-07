@@ -88,6 +88,7 @@ export default class UselessTextInput extends Component {
     {
       axios.get('http://www.omdbapi.com/?apikey=' + APIKey + '&t=' + this.state.text)
       .then(response => {
+        console.log(response);
         fetch('https://www.ecosia.org/search?q=site%3Aimdb.com+' + this.state.text.split(" ").join("+") + "+movie").then(r => {
             return r.text();
         }).then( data => {
