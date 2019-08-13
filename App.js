@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { StatusBar, Dimensions, BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Keyboard, Alert, Linking } from 'react-native';
+import { Modal, Button, StatusBar, Dimensions, BackHandler, ScrollView, Text, TextInput, Image, StyleSheet, View, TouchableOpacity, Keyboard, Alert, Linking } from 'react-native';
 import axios from 'react-native-axios';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {APIKey} from './api';
 import AsyncStorage from '@react-native-community/async-storage';
-import { throwStatement } from '@babel/types';
 
 let isIos = require('react-native').Platform.OS === 'ios';
 let width = Dimensions.get('window').width; 
@@ -23,7 +22,7 @@ export default class UselessTextInput extends Component {
   constructor(props) {
     super(props);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.search);
-    this.state = { ad: false, dismiss: false, list: false, results: [{id: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: '', title: "The Shawshank Redemption", 
+    this.state = { loading: true, first: true, ad: false, dismiss: false, list: false, results: [{id: 0, imdb: "tt0111161", data: "The Shawshank Redemption (1994)"}], text: '', title: "The Shawshank Redemption", 
     year: " (1994)", director: "Frank Darabont", writers: "Stephen King\n\t\tFrank Darabont", cast: "Tim Robbins\n\t\tMorgan Freeman\n\t\tBob Gunton\n\t\tWilliam Sadler", link: "tt0111161", genre: "Drama", imdb: "9.3", rotten: "91%", 
     details: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", time: "142 min", icon: require("./images/fresh.png"), 
     image: "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg"};
@@ -31,9 +30,10 @@ export default class UselessTextInput extends Component {
 
   storeData = async () => {
     try {
-      await AsyncStorage.setItem('state', JSON.stringify(this.state));
+      let state = this.state;
+      state.first = false;
+      await AsyncStorage.setItem('state', JSON.stringify(state));
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -41,13 +41,13 @@ export default class UselessTextInput extends Component {
     try {
       this.setState(JSON.parse(await AsyncStorage.getItem('state')));
       this.setState({text: ""});
+      this.setState({loading: false});
       if(this.state.rotten.split("%")[0] < 60){
         this.setState({icon: require("./images/rotten.png")});
       }else{
         this.setState({icon: require("./images/fresh.png")});
       }
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -88,7 +88,6 @@ export default class UselessTextInput extends Component {
     {
       axios.get('http://www.omdbapi.com/?apikey=' + APIKey + '&t=' + this.state.text)
       .then(response => {
-        console.log(response);
         fetch('https://www.ecosia.org/search?q=site%3Aimdb.com+' + this.state.text.split(" ").join("+") + "+movie").then(r => {
             return r.text();
         }).then( data => {
@@ -239,6 +238,14 @@ export default class UselessTextInput extends Component {
   }
 
   render() {
+    if(this.state.loading)
+    {
+      return(<View style={{backgroundColor: '#444', flex: 1, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+         <StatusBar
+          barStyle="light-content"
+        />
+      </View>);
+    }
     if(this.state.ad)
     {
       return(<View style={{backgroundColor: '#444', flex: 1, flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
@@ -254,6 +261,52 @@ export default class UselessTextInput extends Component {
         <Text style={{ textAlign: "center", fontSize: 20, color: "#CCC"}}>Please consider buying the paid version to help with the costs of running the app and to remove this ad.</Text>
         {this.renderDismiss()}
       </View>);
+    }
+    if(this.state.first)
+    {
+      return(
+        <View style={{backgroundColor: '#444', flex: 1, padding: 20, alignItems: 'center', justifyContent: 'center'}}>
+          <StatusBar
+            barStyle="light-content"
+          />
+          <Text style={{ textAlign: "center", fontSize: 30, color: "#CCC", marginBottom: 20}}>Instructions</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, color: "#CCC"}}>{'\u2022'}</Text>
+            <Text style={{fontSize: 20, color: "#CCC"}}>Clicking the movie poster shows the movie's plot.</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, color: "#CCC"}}>{'\u2022'}</Text>
+            <Text style={{fontSize: 20, color: "#CCC"}}>Clicking the area below the poster (director, run time, genres) shows the movie's cast.</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, color: "#CCC"}}>{'\u2022'}</Text>
+            <Text style={{fontSize: 20, color: "#CCC"}}>There's IMDB and Rotten Tomatoes score, clicking those icons redirects to those websites, along with Letterboxd.</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, color: "#CCC"}}>{'\u2022'}</Text>
+            <Text style={{fontSize: 20, color: "#CCC"}}>Swiping to the sides or clicking the back button switches between movie and list view.</Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{fontSize: 20, color: "#CCC"}}>{'\u2022'}</Text>
+            <Text style={{fontSize: 20, color: "#CCC"}}>When the search does not find a specific match, the search results are automatically shown in the list view, but the results in the list are always updated whenever a search is made.</Text>
+          </View>          
+          <TouchableOpacity 
+            style={{
+              marginTop: 20,
+              paddingRight: 20,
+              paddingLeft: 20,  
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(51,153,255, 1)',
+              height: 40,
+              borderRadius: 20}}
+            onPress={this.hideTutorial}>
+            <Text style={{color: 'rgb(255,255,255)', fontSize: 20}}>
+              Got it!
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
     }
     return (
       <GestureRecognizer style={{backgroundColor: '#444', flex: 1, paddingTop: isIos ? 40 : 0}}
@@ -277,7 +330,7 @@ export default class UselessTextInput extends Component {
               placeholderTextColor='#AAA'
             ></TextInput>
             <TouchableOpacity activeOpacity = { .5 } onPress={ this.search }>
-              <Image 
+              <Image b
                 source={require('./images/search.png')}
                 style={{width: 30, height: 30, marginTop: 10, marginRight: 10, marginLeft: 10}}>
               </Image>
@@ -286,6 +339,11 @@ export default class UselessTextInput extends Component {
           {this.renderMovie()}
       </GestureRecognizer>
     );
+  }
+
+  hideTutorial = () => {
+    this.setState({first: false});
+    this.storeData();
   }
 
   handleClick = (item) => {
