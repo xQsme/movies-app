@@ -9,7 +9,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.5.1",
     "braces": "^3.0.2",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.21",
     "lodash.merge": "^4.6.2",
     "mem": "^5.1.1",
     "react": "16.8.3",
